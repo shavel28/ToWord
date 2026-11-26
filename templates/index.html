@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ToWord — PDF ke Word Gratis Tanpa Watermark</title>
+<meta name="description" content="Ubah PDF ke Word (DOCX) gratis, rapi, bisa diedit, tanda tangan & stempel tetap ada, tanpa watermark. Bisa membaca PDF hasil scan (OCR Bahasa Indonesia).">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f4fd1'/%3E%3Ctext x='32' y='44' font-size='34' font-family='Arial' font-weight='700' fill='white' text-anchor='middle'%3EW%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f3ee; --surface:#ffffff; --ink:#16181d; --muted:#5d6370; --line:#e4e0d6;
+  --brand:#1f4fd1; --brand-ink:#ffffff; --brand-soft:#e6edff; --ok:#11845b; --ok-soft:#e3f5ec;
+  --warn:#b45309; --warn-soft:#fdf0dc; --err:#c2312b; --err-soft:#fde7e5; --stamp:#c0392b;
+  --shadow:0 1px 2px rgba(20,20,30,.05),0 8px 30px rgba(20,20,30,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#111317; --surface:#1a1d23; --ink:#eef0f4; --muted:#9aa1ad; --line:#2b2f37;
+    --brand:#6d93ff; --brand-ink:#0d1020; --brand-soft:#1d2741; --ok:#3ecf8e; --ok-soft:#14291f;
+    --warn:#f0a44b; --warn-soft:#2c2214; --err:#ff7a70; --err-soft:#2e1817; --stamp:#ff7a70;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 30px rgba(0,0,0,.25);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--brand)}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header{padding:22px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:-.02em}
+.logo{width:34px;height:34px;border-radius:9px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:800}
+.hero{padding:26px 0 8px;text-align:center}
+.hero h1{font-size:clamp(28px,5vw,46px);line-height:1.1;letter-spacing:-.03em;margin:0 0 12px;font-weight:800}
+.hero h1 em{font-style:normal;color:var(--brand)}
+.hero p{color:var(--muted);font-size:clamp(15px,2.2vw,18px);max-width:640px;margin:0 auto}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0 0}
+.badge{font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+.badge b{color:var(--ok)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:22px;margin:28px 0}
+.drop{border:2px dashed var(--line);border-radius:16px;padding:42px 16px;text-align:center;cursor:pointer;transition:.15s;position:relative}
+.drop:hover,.drop.over{border-color:var(--brand);background:var(--brand-soft)}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.drop .ic{width:58px;height:58px;margin:0 auto 12px;border-radius:16px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center}
+.drop h2{font-size:20px;margin:0 0 4px;letter-spacing:-.01em}
+.drop p{margin:0;color:var(--muted);font-size:14px}
+.btn{appearance:none;border:0;border-radius:12px;padding:11px 18px;font:inherit;font-weight:700;cursor:pointer;display:inline-flex;gap:8px;align-items:center;justify-content:center;text-decoration:none;transition:.15s}
+.btn-primary{background:var(--brand);color:var(--brand-ink)}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.btn-ghost:hover{color:var(--ink)}
+.btn-ok{background:var(--ok);color:#fff}
+.drop .btn{margin-top:16px;pointer-events:none}
+.modes{margin-top:18px}
+.modes-label{font-size:13px;font-weight:700;color:var(--muted);margin:0 0 8px;text-transform:uppercase;letter-spacing:.06em}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg label{border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;display:block;transition:.15s}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){border-color:var(--brand);background:var(--brand-soft);box-shadow:0 0 0 1px var(--brand) inset}
+.seg label:has(input:focus-visible){outline:2px solid var(--brand);outline-offset:2px}
+.seg strong{display:block;font-size:14px}
+.seg span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.4}
+.files{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:10px}
+.file{border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center}
+.file .fi{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-size:11px;font-weight:800;background:var(--err-soft);color:var(--err)}
+.file.done .fi{background:var(--brand-soft);color:var(--brand)}
+.file .nm{font-weight:700;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file .meta{font-size:13px;color:var(--muted);margin-top:2px}
+.file .meta.err{color:var(--err)}
+.file .meta.okk{color:var(--ok)}
+.bar{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;width:0;background:var(--brand);border-radius:99px;transition:width .4s}
+.file.done .bar{display:none}
+.actions{display:flex;gap:8px;align-items:center}
+.pw{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.pw input{flex:1;min-width:140px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:9px 12px;font:inherit}
+.iconbtn{appearance:none;border:0;background:transparent;color:var(--muted);cursor:pointer;padding:6px;border-radius:8px}
+.iconbtn:hover{background:var(--bg);color:var(--ink)}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:10px;flex-wrap:wrap}
+.toolbar small{color:var(--muted)}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:8px 0 34px}
+.feat{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+.feat .fic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;margin-bottom:10px}
+.feat h3{margin:0 0 4px;font-size:15.5px;letter-spacing:-.01em}
+.feat p{margin:0;color:var(--muted);font-size:13.5px}
+.f1 .fic{background:var(--err-soft);color:var(--stamp)}
+.f2 .fic{background:var(--brand-soft);color:var(--brand)}
+.f3 .fic{background:var(--ok-soft);color:var(--ok)}
+.f4 .fic{background:var(--warn-soft);color:var(--warn)}
+h2.sec{font-size:22px;letter-spacing:-.02em;margin:10px 0 14px}
+.faq details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.faq summary{font-weight:700;cursor:pointer}
+.faq p{color:var(--muted);margin:8px 0 0;font-size:14.5px}
+footer{color:var(--muted);font-size:13px;text-align:center;padding:24px 0 40px}
+@media (max-width:720px){
+  .seg{grid-template-columns:1fr}
+  .features{grid-template-columns:1fr 1fr}
+  .file{grid-template-columns:36px 1fr}
+  .file .actions{grid-column:1/-1;justify-content:flex-end}
+  .card{padding:16px}
+}
+@media (max-width:460px){.features{grid-template-columns:1fr}}
+.spin{animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div class="brand"><div class="logo">W</div>ToWord</div></header>
+
+  <section class="hero">
+    <h1>Ubah PDF ke <em>Word</em> — rapi, bisa diedit, gratis.</h1>
+    <p>Tanda tangan &amp; stempel tetap ada, PDF hasil scan pun terbaca. Tanpa watermark, tanpa daftar, tanpa batas harian.</p>
+    <div class="badges">
+      <span class="badge"><b>✓</b> 100% Gratis</span>
+      <span class="badge"><b>✓</b> Tanpa watermark</span>
+      <span class="badge"><b>✓</b> TTD &amp; stempel tetap ada</span>
+      <span class="badge"><b>✓</b> OCR Bahasa Indonesia</span>
+    </div>
+  </section>
+
+  <section class="card" aria-label="Konversi PDF">
+    <div class="drop" id="drop">
+      <input type="file" id="file" accept="application/pdf,.pdf" multiple aria-label="Pilih file PDF">
+      <div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg></div>
+      <h2>Tarik &amp; lepas PDF di sini</h2>
+      <p>atau klik untuk memilih file · maks {{ max_mb }} MB per file · bisa beberapa file sekaligus</p>
+      <span class="btn btn-primary">Pilih PDF</span>
+    </div>
+
+    <div class="modes">
+      <p class="modes-label">Mode konversi</p>
+      <div class="seg" role="radiogroup">
+        <label><input type="radio" name="mode" value="auto" checked><strong>Otomatis (disarankan)</strong><span>Deteksi sendiri tiap halaman: digital atau scan.</span></label>
+        <label><input type="radio" name="mode" value="ocr"><strong>Scan / Foto (OCR)</strong><span>Untuk PDF hasil scan, foto HP, atau teks yang tidak bisa dicopy.</span></label>
+        <label><input type="radio" name="mode" value="layout"><strong>Dokumen digital</strong><span>PDF asli dari Word/komputer. Tata letak & tabel paling persis.</span></label>
+      </div>
+    </div>
+
+    <ul class="files" id="files" aria-live="polite"></ul>
+    <div class="toolbar" id="toolbar" hidden>
+      <small>File dihapus otomatis dari server setelah {{ keep_minutes }} menit.</small>
+      <button class="btn btn-ghost" id="clear" type="button">Bersihkan daftar</button>
+    </div>
+  </section>
+
+  <section class="features" aria-label="Keunggulan">
+    <div class="feat f1"><div class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg></div><h3>TTD &amp; stempel aman</h3><p>Tanda tangan, stempel, logo &amp; foto disimpan sebagai gambar di posisinya — latar transparan, tidak menutupi teks.</p></div>
+    <div class="feat f2"><div class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V5a1 1 0 011-1h2M17 4h2a1 1 0 011 1v2M20 17v2a1 1 0 01-1 1h-2M7 20H5a1 1 0 01-1-1v-2"/><path d="M8 12h8"/></svg></div><h3>Baca semua teks</h3><p>PDF digital dibaca langsung; scan &amp; foto dibaca dengan OCR (Indonesia + Inggris), termasuk teks yang tertimpa stempel.</p></div>
+    <div class="feat f3"><div class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h16"/></svg></div><h3>Rapi &amp; bisa diedit</h3><p>Paragraf, ukuran huruf, tebal, tabel, perataan &amp; jarak dipertahankan — langsung siap diedit di Word.</p></div>
+    <div class="feat f4"><div class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></div><h3>Privasi terjaga</h3><p>PDF asli langsung dihapus setelah dikonversi. Hasil Word dihapus otomatis. PDF berpassword didukung.</p></div>
+    <div class="feat f2"><div class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M5 21h14"/></svg></div><h3>Tanpa watermark</h3><p>Hasil bersih, tidak ada tulisan atau logo tambahan apa pun di dokumen Anda.</p></div>
+    <div class="feat f3"><div class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div><h3>Anti gagal</h3><p>Jika satu cara gagal, sistem otomatis beralih ke cara lain sehingga Anda selalu mendapat file Word.</p></div>
+  </section>
+
+  <section class="faq" aria-label="Pertanyaan umum">
+    <h2 class="sec">Pertanyaan umum</h2>
+    <details><summary>Apakah benar-benar gratis dan tanpa watermark?</summary><p>Ya. Tidak ada biaya, tidak perlu daftar, dan hasil Word tidak diberi watermark apa pun.</p></details>
+    <details><summary>PDF saya hasil scan, apakah teksnya bisa diedit?</summary><p>Bisa. Pilih mode <b>Otomatis</b> atau <b>Scan / Foto (OCR)</b>. Teks dibaca dengan OCR lalu dijadikan paragraf Word yang bisa diedit, sedangkan tanda tangan dan stempel tetap disisipkan sebagai gambar di tempatnya.</p></details>
+    <details><summary>Tanda tangan / stempel saya hilang atau bergeser?</summary><p>Tanda tangan dan stempel disisipkan sebagai gambar dengan latar transparan. Di Word, Anda bisa menggesernya dengan klik lalu seret. Untuk PDF digital, coba mode <b>Dokumen digital</b> agar posisi paling persis.</p></details>
+    <details><summary>Hasil tata letaknya kurang rapi?</summary><p>Coba mode lain: <b>Dokumen digital</b> untuk PDF dari komputer (tabel paling persis), atau <b>Scan / Foto (OCR)</b> bila teks di Word berantakan/berupa simbol aneh.</p></details>
+    <details><summary>PDF saya dikunci kata sandi.</summary><p>Unggah saja. Jika diperlukan, kolom kata sandi akan muncul. Kata sandi hanya dipakai untuk membuka file dan tidak disimpan.</p></details>
+  </section>
+
+  <footer>ToWord · Konversi PDF ke Word gratis &amp; tanpa watermark</footer>
+</div>
+
+<template id="tpl">
+  <li class="file">
+    <div class="fi">PDF</div>
+    <div style="min-width:0">
+      <div class="nm"></div>
+      <div class="meta"></div>
+      <div class="bar"><i></i></div>
+      <form class="pw" hidden>
+        <input type="password" placeholder="Kata sandi PDF" autocomplete="off" aria-label="Kata sandi PDF">
+        <button class="btn btn-primary" type="submit">Buka</button>
+      </form>
+    </div>
+    <div class="actions"></div>
+  </li>
+</template>
+
+<script>
+(() => {
+  const MAX = {{ max_mb }} * 1024 * 1024;
+  const $ = s => document.querySelector(s);
+  const drop = $('#drop'), input = $('#file'), list = $('#files'), toolbar = $('#toolbar');
+  const tpl = $('#tpl');
+
+  const fmtSize = b => b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB';
+  const mode = () => document.querySelector('input[name=mode]:checked').value;
+
+  ['dragenter', 'dragover'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', ev => addFiles(ev.dataTransfer.files));
+  input.addEventListener('change', () => { addFiles(input.files); input.value = ''; });
+  $('#clear').addEventListener('click', () => {
+    list.querySelectorAll('.file').forEach(li => { if (li._job) fetch('/api/job/' + li._job, {method: 'DELETE'}); li.remove(); });
+    toolbar.hidden = true;
+  });
+
+  function addFiles(files) {
+    for (const f of files) {
+      const li = tpl.content.firstElementChild.cloneNode(true);
+      li.querySelector('.nm').textContent = f.name;
+      li.querySelector('.nm').title = f.name;
+      list.prepend(li);
+      toolbar.hidden = false;
+      if (!/\.pdf$/i.test(f.name) && f.type !== 'application/pdf') { fail(li, 'Bukan file PDF.'); continue; }
+      if (f.size > MAX) { fail(li, 'File terlalu besar (maks {{ max_mb }} MB).'); continue; }
+      start(li, f, mode(), '');
+    }
+  }
+
+  function setMeta(li, text, cls) {
+    const m = li.querySelector('.meta');
+    m.textContent = text; m.className = 'meta' + (cls ? ' ' + cls : '');
+  }
+  function setBar(li, frac) { li.querySelector('.bar i').style.width = Math.round(frac * 100) + '%'; }
+  function fail(li, msg, retry) {
+    li.querySelector('.bar').hidden = true;
+    setMeta(li, msg, 'err');
+    const a = li.querySelector('.actions'); a.innerHTML = '';
+    if (retry) {
+      const b = document.createElement('button');
+      b.className = 'btn btn-ghost'; b.type = 'button'; b.textContent = 'Coba lagi';
+      b.onclick = retry; a.append(b);
+    }
+  }
+
+  function start(li, file, m, password) {
+    li.className = 'file';
+    li.querySelector('.bar').hidden = false;
+    li.querySelector('.pw').hidden = true;
+    li.querySelector('.actions').innerHTML = '';
+    setBar(li, 0);
+    setMeta(li, fmtSize(file.size) + ' · Mengunggah…');
+    const fd = new FormData();
+    fd.append('file', file); fd.append('mode', m);
+    if (password) fd.append('password', password);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/convert');
+    xhr.upload.onprogress = e => { if (e.lengthComputable) setBar(li, 0.15 * e.loaded / e.total); };
+    xhr.onload = () => {
+      let r = {}; try { r = JSON.parse(xhr.responseText); } catch (_) {}
+      if (xhr.status !== 200 || !r.id) return fail(li, r.error || 'Gagal mengunggah.', () => start(li, file, m, password));
+      li._job = r.id;
+      poll(li, file, m, r.id);
+    };
+    xhr.onerror = () => fail(li, 'Koneksi terputus.', () => start(li, file, m, password));
+    xhr.send(fd);
+  }
+
+  function poll(li, file, m, id) {
+    fetch('/api/status/' + id).then(r => r.json()).then(s => {
+      if (s.status === 'done') return finish(li, id, s);
+      if (s.status === 'password') {
+        li.querySelector('.bar').hidden = true;
+        setMeta(li, s.message, 'err');
+        const form = li.querySelector('.pw');
+        form.hidden = false;
+        const inp = form.querySelector('input'); inp.value = ''; inp.focus();
+        form.onsubmit = ev => { ev.preventDefault(); start(li, file, m, inp.value); };
+        return;
+      }
+      if (s.status === 'error' || s.status === 'missing') {
+        const other = m === 'ocr' ? 'auto' : 'ocr';
+        return fail(li, s.message, () => start(li, file, other, ''));
+      }
+      setBar(li, 0.15 + 0.85 * (s.progress || 0));
+      setMeta(li, fmtSize(file.size) + ' · ' + (s.message || 'Memproses…'));
+      setTimeout(() => poll(li, file, m, id), 800);
+    }).catch(() => setTimeout(() => poll(li, file, m, id), 2000));
+  }
+
+  function finish(li, id, s) {
+    li.classList.add('done');
+    li.querySelector('.fi').textContent = 'DOCX';
+    li.querySelector('.nm').textContent = s.name;
+    const i = s.info || {};
+    let detail = i.pages + ' halaman';
+    if (i.ocr_pages) detail += ' · ' + i.ocr_pages + ' dibaca dengan OCR';
+    setMeta(li, 'Selesai · ' + detail, 'okk');
+    const a = li.querySelector('.actions'); a.innerHTML = '';
+    const dl = document.createElement('a');
+    dl.className = 'btn btn-ok'; dl.href = '/api/download/' + id; dl.textContent = 'Unduh Word';
+    dl.setAttribute('download', s.name);
+    a.append(dl);
+  }
+})();
+</script>
+</body>
+</html>

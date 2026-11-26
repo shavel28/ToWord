@@ -31,7 +31,8 @@ WORKERS = int(os.environ.get("TOWORD_WORKERS", str(max(1, (os.cpu_count() or 2) 
 DATA_DIR = os.environ.get("TOWORD_DATA_DIR") or os.path.join(tempfile.gettempdir(), "toword_jobs")
 os.makedirs(DATA_DIR, exist_ok=True)
 
-app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+app = Flask(__name__, template_folder=BASE_DIR, static_folder=None)
 app.config["MAX_CONTENT_LENGTH"] = MAX_MB * 1024 * 1024
 
 executor = ThreadPoolExecutor(max_workers=WORKERS)

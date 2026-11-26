@@ -1,3 +1,14 @@
+---
+title: ToWord
+emoji: 📄
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 8000
+pinned: false
+short_description: PDF ke Word gratis, rapi, tanpa watermark
+---
+
 # ToWord — PDF ke Word gratis, tanpa watermark
 
 Web untuk mengubah PDF menjadi Word (.docx) yang **rapi dan bisa diedit**, dengan
@@ -19,6 +30,23 @@ Web untuk mengubah PDF menjadi Word (.docx) yang **rapi dan bisa diedit**, denga
 - Banyak file sekaligus, tampilan responsif (HP & desktop), mode gelap.
 
 ## Pasang di hosting (agar bisa dibuka online)
+
+### Hugging Face Spaces — gratis, tanpa kartu (disarankan)
+1. Daftar di https://huggingface.co/join lalu verifikasi email.
+2. Buka https://huggingface.co/new-space :
+   - **Space name**: `toword`
+   - **Space SDK**: pilih **Docker** → template **Blank**
+   - **Space hardware**: **CPU basic · Free**
+   - Visibility: **Public** → klik **Create Space**.
+3. Di halaman Space, buka tab **Files** → **+ Contribute / Add file** → **Upload files**.
+4. Unggah 6 file ini dari repo (Code → Download ZIP, lalu ekstrak):
+   `app.py`, `converter.py`, `index.html`, `requirements.txt`, `Dockerfile`, `README.md`
+   → klik **Commit changes to main**.
+5. Tunggu status **Building** → **Running** (±5–10 menit). Web bisa dibuka di
+   `https://huggingface.co/spaces/NAMA-ANDA/toword` atau `https://NAMA-ANDA-toword.hf.space`.
+
+Bagian `---` paling atas README ini adalah pengaturan untuk Hugging Face, jangan dihapus.
+Space gratis "tidur" bila 48 jam tidak dipakai, dan bangun lagi saat dibuka.
 
 ### Render.com — gratis, paling mudah
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/shavel28/ToWord)
@@ -81,7 +109,7 @@ python app.py
 ## Struktur
 - `app.py` — server web Flask (unggah, antrean, progres, unduh).
 - `converter.py` — mesin konversi (pdf2docx + OCR Tesseract + deteksi ttd/stempel).
-- `templates/index.html` — tampilan web.
+- `index.html` — tampilan web.
 
 Bisa juga dipakai dari Python:
 ```python

@@ -1,0 +1,15 @@
+# Blueprint Render.com — deploy otomatis ToWord
+services:
+  - type: web
+    name: toword
+    runtime: docker
+    plan: free
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: TOWORD_WORKERS
+        value: "1"
+      - key: TOWORD_MAX_MB
+        value: "30"
+      - key: TOWORD_KEEP_MINUTES
+        value: "30"

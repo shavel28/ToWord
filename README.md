@@ -18,7 +18,37 @@ Web untuk mengubah PDF menjadi Word (.docx) yang **rapi dan bisa diedit**, denga
 - PDF berpassword didukung; PDF asli dihapus setelah diproses, hasil dihapus otomatis (default 30 menit).
 - Banyak file sekaligus, tampilan responsif (HP & desktop), mode gelap.
 
-## Menjalankan
+## Pasang di hosting (agar bisa dibuka online)
+
+### Render.com — gratis, paling mudah
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/shavel28/ToWord)
+
+1. Pastikan kode ini sudah ada di branch `main` (merge dulu jika masih di branch lain).
+2. Klik tombol **Deploy to Render** di atas → masuk/daftar dengan GitHub.
+3. Render membaca `render.yaml` otomatis (Docker, paket Free, pengaturan sudah terisi).
+   Isi nama layanan bila diminta, lalu klik **Apply / Deploy**.
+4. Tunggu ±5–10 menit sampai status **Live**, lalu buka alamatnya,
+   misalnya `https://toword.onrender.com`.
+
+Cara manual (tanpa tombol): Render → **New → Web Service** → pilih repo ini →
+Runtime **Docker** → Instance **Free** → tambahkan env `TOWORD_WORKERS=1` dan
+`TOWORD_MAX_MB=30` → **Deploy**.
+
+Catatan paket gratis: server "tidur" setelah 15 menit tidak dipakai (buka pertama
+±30–60 detik), dan RAM kecil (512 MB) sehingga PDF scan yang sangat tebal bisa lambat.
+Untuk pemakaian rutin gunakan paket berbayar atau VPS.
+
+### VPS (Ubuntu) dengan Docker
+```bash
+sudo apt update && sudo apt install -y docker.io git
+git clone https://github.com/shavel28/ToWord.git && cd ToWord
+sudo docker build -t toword .
+sudo docker run -d --restart always -p 80:8000 --name toword toword
+```
+Buka `http://IP-VPS-anda`. Update versi baru:
+`git pull && sudo docker build -t toword . && sudo docker rm -f toword && sudo docker run -d --restart always -p 80:8000 --name toword toword`
+
+## Menjalankan di komputer sendiri
 
 ### Docker (paling mudah)
 ```bash
